@@ -6,7 +6,6 @@ import math
 # Load your pre-trained models
 best_modelRNN = joblib.load("best_modelRNN.pkl")
 best_rf_model = joblib.load("random_forest_model.pkl")
-best_dt_model = joblib.load("decision_tree_model.pkl")  # Load the Decision Tree model
 
 # Load the scaler used during training
 scaler = joblib.load("scaler.pkl")
@@ -25,18 +24,11 @@ def predict_with_rf(input_data):
     log_sales_prediction = best_rf_model.predict(input_array)[0]
     return math.exp(log_sales_prediction)  # Convert log scale back to original scale
 
-# Function for prediction with Decision Tree
-def predict_with_dt(input_data):
-    # Reshape input for Decision Tree model (flat input)
-    input_array = np.array(input_data).reshape(1, -1)  # (1, n_features)
-    log_sales_prediction = best_dt_model.predict(input_array)[0]
-    return math.exp(log_sales_prediction)  # Convert log scale back to original scale
-
 # Streamlit App Layout
 st.title("Sales Prediction App")
 
 st.sidebar.header("Model Selection")
-selected_model = st.sidebar.selectbox("Choose a model", ["RNN Model", "Random Forest Model", "Decision Tree Model"])
+selected_model = st.sidebar.selectbox("Choose a model", ["RNN Model", "Random Forest Model"])
 
 st.header("Input Features")
 
@@ -67,14 +59,12 @@ raw_input_data = [store, temperature, fuel_price, cpi, unemployment, dept, size,
 
 # Scale the input features using the same scaler used during training
 scaled_input_data = scaler.transform([raw_input_data])  # Ensure input is 2D (1, n_features)
-scaled_input_data = scaled_input_data.flatten()  # Flattened for RandomForest and DecisionTree
+scaled_input_data = scaled_input_data.flatten()  # Flattened for RandomForest
 
 if st.button("Predict"):
     if selected_model == "RNN Model":
         prediction = predict_with_rnn(scaled_input_data)  # RNN needs (1, 1, n_features)
     elif selected_model == "Random Forest Model":
         prediction = predict_with_rf(scaled_input_data)  # RandomForest needs (1, n_features)
-    elif selected_model == "Decision Tree Model":
-        prediction = predict_with_dt(scaled_input_data)  # Decision Tree needs (1, n_features)
 
     st.success(f"Predicted Weekly Sales: ${prediction:,.2f}")
