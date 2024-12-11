@@ -5,7 +5,7 @@ import math
 
 # Load your pre-trained models
 best_modelRNN = joblib.load("best_modelRNN.pkl")
-best_rf_model = joblib.load("random_forest_model.pkl")
+linear_model = joblib.load("linear_model.pkl")  # Load Linear Regression model
 
 # Load the scaler used during training
 scaler = joblib.load("scaler.pkl")
@@ -17,18 +17,18 @@ def predict_with_rnn(input_data):
     log_sales_prediction = best_modelRNN.predict(input_array)[0]
     return math.exp(log_sales_prediction)  # Convert log scale back to original scale
 
-# Function for prediction with Random Forest
-def predict_with_rf(input_data):
-    # Reshape input for Random Forest model (flat input)
+# Function for prediction with Linear Regression
+def predict_with_linear(input_data):
+    # Linear Regression model takes flat input (no reshaping required)
     input_array = np.array(input_data)
-    log_sales_prediction = best_rf_model.predict(input_array)
+    log_sales_prediction = linear_model.predict(input_array)
     return math.exp(log_sales_prediction)  # Convert log scale back to original scale
 
 # Streamlit App Layout
 st.title("Sales Prediction App")
 
 st.sidebar.header("Model Selection")
-selected_model = st.sidebar.selectbox("Choose a model", ["RNN Model", "Random Forest Model"])
+selected_model = st.sidebar.selectbox("Choose a model", ["RNN Model", "Linear Regression Model"])
 
 st.header("Input Features")
 
@@ -59,12 +59,12 @@ raw_input_data = [store, temperature, fuel_price, cpi, unemployment, dept, size,
 
 # Scale the input features using the same scaler used during training
 scaled_input_data = scaler.transform([raw_input_data])  # Ensure input is 2D (1, n_features)
-scaled_input_data = scaled_input_data.flatten()  # Flattened for RandomForest
+scaled_input_data = scaled_input_data.flatten()  # Flattened for Linear Regression
 
 if st.button("Predict"):
     if selected_model == "RNN Model":
         prediction = predict_with_rnn(scaled_input_data)  # RNN needs (1, 1, n_features)
-    elif selected_model == "Random Forest Model":
-        prediction = predict_with_rf(scaled_input_data)  # RandomForest needs (1, n_features)
+    elif selected_model == "Linear Regression Model":
+        prediction = predict_with_linear(scaled_input_data)  # Linear Regression needs (1, n_features)
 
     st.success(f"Predicted Weekly Sales: ${prediction:,.2f}")
