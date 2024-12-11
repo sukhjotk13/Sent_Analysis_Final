@@ -15,14 +15,14 @@ def predict_with_rnn(input_data):
     # Reshape input for the RNN model (samples, timesteps, features)
     input_array = np.array(input_data).reshape(1, 1, -1)  # (1, 1, n_features)
     log_sales_prediction = best_modelRNN.predict(input_array)[0]
-    return math.exp(log_sales_prediction)  # Convert log scale back to original scale
+    return np.exp(log_sales_prediction)  # Convert log scale back to original scale
 
 # Function for prediction with Linear Regression
 def predict_with_linear(input_data):
     # Linear Regression model takes flat input (no reshaping required)
     input_array = np.array(input_data)  # (1, n_features)
     log_sales_prediction = linear_model.predict(input_array)[0]
-    return math.exp(log_sales_prediction)  # Convert log scale back to original scale
+    return np.exp(log_sales_prediction)  # Convert log scale back to original scale
 
 # Streamlit App Layout
 st.title("Sales Prediction App")
