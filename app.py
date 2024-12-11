@@ -20,8 +20,8 @@ def predict_with_rnn(input_data):
 # Function for prediction with Random Forest
 def predict_with_rf(input_data):
     # Reshape input for Random Forest model (flat input)
-    input_array = np.array(input_data).reshape(1, -1)  # (1, n_features)
-    log_sales_prediction = best_rf_model.predict(input_array)[0]
+    input_array = np.array(input_data)
+    log_sales_prediction = best_rf_model.predict(input_array)
     return math.exp(log_sales_prediction)  # Convert log scale back to original scale
 
 # Streamlit App Layout
