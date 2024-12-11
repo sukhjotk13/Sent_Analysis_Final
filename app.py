@@ -22,7 +22,7 @@ def predict_with_linear(input_data):
     # Linear Regression model takes flat input (no reshaping required)
     input_array = np.array(input_data)  # (1, n_features)
     log_sales_prediction = linear_model.predict(input_array)[0]
-    return np.exp(log_sales_prediction)  # Convert log scale back to original scale
+    return log_sales_prediction # Convert log scale back to original scale
 
 # Streamlit App Layout
 st.title("Sales Prediction App")
