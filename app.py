@@ -20,7 +20,7 @@ def predict_with_rnn(input_data):
 # Function for prediction with Linear Regression
 def predict_with_linear(input_data):
     # Linear Regression model takes flat input (no reshaping required)
-    input_array = np.array(input_data).reshape(1, -1)  # (1, n_features)
+    input_array = np.array(input_data)  # (1, n_features)
     log_sales_prediction = linear_model.predict(input_array)[0]
     return math.exp(log_sales_prediction)  # Convert log scale back to original scale
 
@@ -59,7 +59,7 @@ raw_input_data = [store, temperature, fuel_price, cpi, unemployment, dept, size,
 
 # Scale the input features using the same scaler used during training
 scaled_input_data = scaler.transform([raw_input_data])  # Ensure input is 2D (1, n_features)
-scaled_input_data = scaled_input_data.flatten()  # Flattened for Linear Regression
+
 
 if st.button("Predict"):
     if selected_model == "RNN Model":
